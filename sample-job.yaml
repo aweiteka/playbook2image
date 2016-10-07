@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Job
+metadata:
+  name: testplaybook
+spec:
+  selector:         
+    matchLabels:
+      app: testplaybook
+  parallelism: 1    
+  completions: 1    
+  template:         
+    metadata:
+      name: testplaybook
+      labels:
+        app: testplaybook
+    spec:
+      containers:
+      - name: testplaybook
+        image: atomic-host-tests
+        environment:
+        - name: PLAYBOOK_FILE
+          value: tests/new-image-smoketest/main.yaml
+        - name: ANSIBLE_HOST_KEY_CHECKING
+          value: "False"
+        - name: OPTS
+          value: "-vvv --private-key /opt/app-root/src/id_rsa"
+        volumeMounts:
+        - name: sshkey
+          mountPath: /opt/app-root/src/id_rsa
+      volumes:
+        - name: sshkey
+          secret:
+            secretName: sshkey
+      restartPolicy: Never
+
+
