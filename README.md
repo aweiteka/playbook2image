@@ -4,20 +4,33 @@ A [Source-to-Image (S2I)](https://docs.openshift.org/latest/architecture/core_co
 
 ## Usage
 
-Prerequisites: an OpenShiftv3 cluster or s2i binary
+Prerequisites: an OpenShiftv3 cluster or [s2i binary](https://github.com/openshift/source-to-image/releases)
 
 In this workflow we build a new image with our playbook, setup secrets (private ssh key, for example) and create a job to run our playbook image.
- 
-1. Create a build. This will create a new image with your playbook sourcecode
 
-        oc new-build docker.io/aweiteka/playbook2image~https://github.com/projectatomic/atomic-host-tests.git
-2. Create a secret for our ssh private key
+1. **Build**: Add your playbook to the image. This will create a new image with your playbook sourcecode
+  * OpenShift:
 
-        oc secrets new-sshauth sshkey --ssh-privatekey=~/.ssh/id_rsa
-3. Create a new job. Edit the sample-job.yaml file and run.
+          oc new-build docker.io/aweiteka/playbook2image~https://github.com/PLAYBOOK/REPO.git
+  * s2i CLI tool:
 
-        oc create -f sample-job.yaml
+          sudo s2i build https://github.com/PLAYBOOK/REPO.git docker.io/aweiteka/playbook2image NEW_PLAYBOOK_IMAGE_NAME
+1. **Run**: as an [OpenShift Job](https://docs.openshift.org/latest/dev_guide/jobs.html) or with docker via command line
+  * OpenShift:
+    1. Create a secret for our ssh private key
 
+            oc secrets new-sshauth sshkey --ssh-privatekey=~/.ssh/id_rsa
+    1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/aweiteka/playbook2image/master/sample-job.yaml) file, edit and create the job.
+
+            oc create -f sample-job.yaml
+  * Docker
+
+          sudo docker run \
+               -v ~/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa \
+               -e OPTS="--become --user cloud-user" \
+               -e PLAYBOOK_FILE=PATH_TO_PLAYBOOK \
+               -e INVENTORY_URL=URL \
+               IMAGE_FROM_BUILD_STEP
 
 ### Environment Variable Options
 
@@ -35,6 +48,9 @@ URL to dynamic inventory script. This is downloaded into the container as **/opt
 
 **`PYTHON_REQUIREMENTS`** (optional, default 'requirements.txt')
 Path to python dependency requirements.txt file.
+
+**`SSH_KEY`** (optional, default '/opt/app-root/src/.ssh/id_rsa')
+Path in the container to private SSH key. For OpenShift this must match the secret volumeMount (see mountPath in [sample-job.yaml](sample-job.yaml)). For docker this must match the bindmount container path, e.g. `-v ~/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa`.
 
 **`OPTS`** (optional)
 List of options appended to ansible-playbook command. An example of commonly used options:

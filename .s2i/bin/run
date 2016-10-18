@@ -8,7 +8,7 @@
 #
 
 
-#SOURCEDIR=/opt/app-root/src
+# SOURCE and HOME DIRECTORY: /opt/app-root/src
 
 #set -x
 if [[ -v INVENTORY_FILE ]]; then
@@ -28,8 +28,11 @@ if [[ -v VAULT_PASS ]]; then
   echo ${VAULT_PASS} > ${VAULT_PASS_FILE}
   VAULT_PASS_ARG="--vault-password-file ${VAULT_PASS_FILE}"
 fi
-# FIXME: this is hard-coded
-chmod 600 /opt/app-root/src/id_rsa
+
+SSH_KEY="${SSH_KEY:=/opt/app-root/src/.ssh/id_rsa}"
+if [[ -r ${SSH_KEY} ]]; then
+  chmod 600 ${SSH_KEY}
+fi
 
 ansible-playbook ${INVENTORY_ARG} ${VAULT_PASS_ARG} ${OPTS} ${PLAYBOOK_FILE}
 #set +x

@@ -23,10 +23,10 @@ spec:
         - name: ANSIBLE_HOST_KEY_CHECKING
           value: "False"
         - name: OPTS
-          value: "-vvv --private-key /opt/app-root/src/id_rsa"
+          value: "-vvv --private-key /opt/app-root/src/.ssh/id_rsa"
         volumeMounts:
         - name: sshkey
-          mountPath: /opt/app-root/src/id_rsa
+          mountPath: /opt/app-root/src/.ssh/id_rsa
       volumes:
         - name: sshkey
           secret:
