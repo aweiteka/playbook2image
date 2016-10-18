@@ -30,7 +30,3 @@ elif [[ -e requirements.txt ]]; then
   pip install --user -r requirements.txt
 fi
 
-#if [[ -e ansible.cfg ]]; then
-#  echo "---> Installing custom ansible.cfg..."
-#  cp ansible.cfg ~/.ansible.cfg
-#fi
