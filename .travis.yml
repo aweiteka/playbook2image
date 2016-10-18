@@ -1,0 +1,13 @@
+sudo: required
+
+services:
+- docker
+
+before_install:
+- curl -L -o s2i.tar.gz  https://github.com/openshift/source-to-image/releases/download/v1.1.2/source-to-image-v1.1.2-5732fdd-linux-386.tar.gz
+- tar -xzvf s2i.tar.gz
+- export PATH=$PATH:$PWD/
+- docker pull docker.io/openshift/base-centos7
+
+script:
+- make test
