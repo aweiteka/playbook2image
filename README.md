@@ -43,6 +43,9 @@ Relative path to inventory file relative to project source. This is mounted in t
 **`INVENTORY_URL`** (optional)
 URL to inventory file. This is downloaded into the container as inventory file **/opt/app-root/src/inventory**.
 
+**`ALLOW_ANSIBLE_CONNECTION_LOCAL`** (optional)
+If set to false all `ansible_connection=local` settings will be ignored.
+
 **`DYNAMIC_SCRIPT_URL`** (optional)
 URL to dynamic inventory script. This is downloaded into the container as **/opt/app-root/src/dynamic_inventory_script**. If the dynamic inventory script is python see **PYTHON_REQUIREMENTS**.
 
