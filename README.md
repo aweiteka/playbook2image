@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/aweiteka/playbook2image.svg?branch=master)](https://travis-ci.org/aweiteka/playbook2image)
+
 # Playbook To Image
 
 A [Source-to-Image (S2I)](https://docs.openshift.org/latest/architecture/core_concepts/builds_and_image_streams.html#source-build) builder image for packaging Ansible playbooks as a self-executing container.
