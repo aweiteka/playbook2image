@@ -11,7 +11,10 @@ LABEL io.k8s.description="Ansible playbook to image builder" \
       #io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,ansible,playbook"
 
-RUN yum install -y ansible python-pip && yum clean all -y
+# ansible and pip are in EPEL
+RUN yum install -y epel-release && yum clean all -y
+
+RUN yum install -y ansible python-pip python-devel && yum clean all -y
 
 # TODO (optional): Copy the builder files into /opt/app-root
 #COPY ./<builder_folder>/ /opt/app-root/
