@@ -1,0 +1,5 @@
+#!/bin/sh
+set -x
+chown -R ${USER_UID}:0 ${APP_ROOT}
+chmod -R g+rw ${APP_ROOT} /etc/passwd
+find ${APP_ROOT} -type d -exec chmod g+x {} +
