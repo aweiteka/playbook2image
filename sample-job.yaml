@@ -16,7 +16,7 @@ spec:
         image: 172.30.114.236:5000/some_project/atomic-host-tests
         env:
         - name: PLAYBOOK_FILE
-          value: tests/new-image-smoketest/main.yaml
+          value: /opt/app-root/src/playbooks/main.yaml
         - name: ANSIBLE_HOST_KEY_CHECKING
           value: "False"
         - name: OPTS
