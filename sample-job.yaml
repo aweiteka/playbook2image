@@ -1,11 +1,8 @@
-apiVersion: extensions/v1beta1
+apiVersion: batch/v1
 kind: Job
 metadata:
   name: testplaybook
 spec:
-  selector:         
-    matchLabels:
-      app: testplaybook
   parallelism: 1    
   completions: 1    
   template:         
@@ -16,8 +13,8 @@ spec:
     spec:
       containers:
       - name: testplaybook
-        image: atomic-host-tests
-        environment:
+        image: 172.30.114.236:5000/some_project/atomic-host-tests
+        env:
         - name: PLAYBOOK_FILE
           value: tests/new-image-smoketest/main.yaml
         - name: ANSIBLE_HOST_KEY_CHECKING
