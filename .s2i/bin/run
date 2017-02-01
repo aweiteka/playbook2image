@@ -37,9 +37,6 @@ if [[ -v VAULT_PASS ]]; then
 fi
 
 SSH_KEY="${SSH_KEY:=/opt/app-root/src/.ssh/id_rsa}"
-if [[ -r ${SSH_KEY} ]]; then
-  chmod 600 ${SSH_KEY}
-fi
 
 ansible-playbook ${INVENTORY_ARG} ${VAULT_PASS_ARG} ${OPTS} ${PLAYBOOK_FILE}
 #set +x
