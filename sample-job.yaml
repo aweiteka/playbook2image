@@ -1,26 +1,34 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: testplaybook
+  name: playbook-job
 spec:
   parallelism: 1    
   completions: 1    
   template:         
     metadata:
-      name: testplaybook
+      name: playbook-job
       labels:
-        app: testplaybook
+        app: playbook-job
     spec:
       containers:
-      - name: testplaybook
+      - name: playbook-job
+        # imagestream or internal/external registry
         image: 172.30.114.236:5000/some_project/atomic-host-tests
         env:
         - name: PLAYBOOK_FILE
           value: /opt/app-root/src/playbooks/main.yaml
+        - name: INVENTORY_URL
+          value: http://example.com/myhosts
+        - name: ANSIBLE_PRIVATE_KEY_FILE
+          value: /opt/app-root/src/.ssh/id_rsa/ssh-privatekey
+        - name: ANSIBLE_LOCAL_TEMP
+          value: /tmp/certcheck
         - name: ANSIBLE_HOST_KEY_CHECKING
           value: "False"
+        # options to ansible-playbook https://linux.die.net/man/1/ansible-playbook
         - name: OPTS
-          value: "-vvv --private-key /opt/app-root/src/.ssh/id_rsa"
+          value: "-vvv"
         volumeMounts:
         - name: sshkey
           mountPath: /opt/app-root/src/.ssh/id_rsa
@@ -29,5 +37,3 @@ spec:
           secret:
             secretName: sshkey
       restartPolicy: Never
-
-

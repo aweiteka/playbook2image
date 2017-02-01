@@ -36,7 +36,5 @@ if [[ -v VAULT_PASS ]]; then
   VAULT_PASS_ARG="--vault-password-file ${VAULT_PASS_FILE}"
 fi
 
-SSH_KEY="${SSH_KEY:=/opt/app-root/src/.ssh/id_rsa}"
-
 ansible-playbook ${INVENTORY_ARG} ${VAULT_PASS_ARG} ${OPTS} ${PLAYBOOK_FILE}
 #set +x
