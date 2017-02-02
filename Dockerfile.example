@@ -1,0 +1,9 @@
+# An example Dockerfile to package playbooks as docker image
+# If using OpenShift, consider using the platform source2image build instead
+FROM docker.io/aweiteka/playbook2image:latest
+
+# OPTIONAL:
+#ADD your_dynamic_inventory_script.py requirements.txt /opt/app-root/src/
+#RUN pip install -r /opt/app-root/src/requirements.txt
+
+ADD YOUR_PLAYBOOK /opt/app-root/src/
