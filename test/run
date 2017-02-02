@@ -102,7 +102,7 @@ wait_for_cid() {
 
 test_usage() {
   echo "Testing 's2i usage'..."
-  s2i usage ${s2i_args} ${IMAGE_NAME} usage &>/dev/null
+  s2i usage ${s2i_args} ${IMAGE_NAME} &>/dev/null
 }
 
 test_connection() {
