@@ -14,7 +14,11 @@ LABEL io.k8s.description="Ansible playbook to image builder" \
 # ansible and pip are in EPEL
 RUN yum install -y epel-release && yum clean all -y
 
-RUN yum install -y  --setopt=tsflags=nodocs ansible python-pip python-devel && yum clean all -y
+# workaround for https://github.com/openshift/openshift-ansible/issues/3111
+# install ansible via pip to lock version
+#RUN yum install -y  --setopt=tsflags=nodocs ansible python-pip python-devel && yum clean all -y
+RUN yum install -y  --setopt=tsflags=nodocs python-pip python-devel && yum clean all -y
+RUN pip install -Iv ansible==2.2.0.0
 
 # TODO (optional): Copy the builder files into /opt/app-root
 #COPY ./<builder_folder>/ /opt/app-root/
