@@ -15,7 +15,7 @@ USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 sed "s@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@${USER_NAME}:x:${USER_ID}:${GROUP_ID}@g" ${APP_ROOT}/etc/passwd.template > /etc/passwd
 
-INVENTORY="tmp_inventory"
+INVENTORY="${APP_HOME}/tmp_inventory"
 INVENTORY_ARG="-i ${INVENTORY}"
 if [[ -v INVENTORY_FILE ]]; then
   cp ${INVENTORY_FILE} ${INVENTORY}
@@ -24,6 +24,8 @@ elif [[ -v INVENTORY_URL ]]; then
 elif [[ -v DYNAMIC_SCRIPT_URL ]]; then
   curl -o ${INVENTORY} ${DYNAMIC_SCRIPT_URL}
   chmod 755 ${INVENTORY}
+else
+  INVENTORY_ARG=""
 fi
 
 if [[ "$ALLOW_ANSIBLE_CONNECTION_LOCAL" = false ]]; then
@@ -36,5 +38,8 @@ if [[ -v VAULT_PASS ]]; then
   VAULT_PASS_ARG="--vault-password-file ${VAULT_PASS_FILE}"
 fi
 
+WORK_DIR=${WORK_DIR:-${APP_HOME}}
+
+cd ${WORK_DIR}
 ansible-playbook ${INVENTORY_ARG} ${VAULT_PASS_ARG} ${OPTS} ${PLAYBOOK_FILE}
 #set +x

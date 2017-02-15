@@ -48,6 +48,10 @@ run_s2i_build() {
   s2i build --incremental=true ${s2i_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
 
+run_s2i_oc_build() {
+  s2i build --incremental=true ${s2i_args} -e INSTALL_OC=true file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp-oc
+}
+
 prepare() {
   if ! image_exists ${IMAGE_NAME}; then
     echo "ERROR: The image ${IMAGE_NAME} must exist before this script is executed."
@@ -67,6 +71,11 @@ run_test_application() {
   docker run --rm --cidfile=${cid_file} -e ANSIBLE_HOST_KEY_CHECKING=False -e OPTS="-vvv -u 1001 --connection local" -e INVENTORY_FILE=inventory -e PLAYBOOK_FILE=test-playbook.yaml ${IMAGE_NAME}-testapp
 }
 
+run_test_oc_application() {
+  #docker run --rm --cidfile=${cid_file} -e ANSIBLE_HOST_KEY_CHECKING=False -e OPTS="-vvv --become --private-key id_rsa" -e INVENTORY_FILE=inventory -e PLAYBOOK_FILE=test-playbook.yaml ${IMAGE_NAME}-testapp
+  docker run --rm --cidfile=${cid_file} -e ANSIBLE_HOST_KEY_CHECKING=False -e OPTS="-vvv -u 1001 --connection local" -e INVENTORY_FILE=inventory -e PLAYBOOK_FILE=test-oc-playbook.yaml ${IMAGE_NAME}-testapp-oc
+}
+
 cleanup() {
   if [ -f $cid_file ]; then
     if container_exists; then
@@ -76,6 +85,10 @@ cleanup() {
   if image_exists ${IMAGE_NAME}-testapp; then
     docker rmi ${IMAGE_NAME}-testapp
   fi
+  if image_exists ${IMAGE_NAME}-testapp-oc; then
+    docker rmi ${IMAGE_NAME}-testapp-oc
+  fi
+  rm ${cid_file}
 }
 
 check_result() {
@@ -153,6 +166,14 @@ wait_for_cid
 # for this application we're not exposing a service so this isn't relevant
 #test_connection
 #check_result $?
+
+cleanup
+
+run_s2i_oc_build
+check_result $?
+
+run_test_oc_application
+check_result $?
 
 cleanup
 

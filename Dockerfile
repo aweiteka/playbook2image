@@ -29,14 +29,15 @@ COPY user_setup /tmp
 
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
-    USER_UID=1001
+    USER_UID=1001 \
+    OC_BINARY_URL='https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-client-tools-v1.4.1-3f9807a-linux-64bit.tar.gz'
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc ${APP_ROOT}/bin
 RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && \
     /tmp/user_setup
 
 # This default user is created in the openshift/base-centos7 image
-USER ${USER_UID} 
+USER ${USER_UID}
 
 RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 CMD ["usage"]
