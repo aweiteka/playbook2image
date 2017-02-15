@@ -7,3 +7,5 @@ FROM docker.io/aweiteka/playbook2image:latest
 #RUN pip install -r /opt/app-root/src/requirements.txt
 
 ADD YOUR_PLAYBOOK /opt/app-root/src/
+
+CMD ["run"]
