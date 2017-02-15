@@ -83,6 +83,12 @@ ansible-vault passphrase for decrypting files. This is written to a file and use
 
 Disable host key checking. See [documentation](http://docs.ansible.com/ansible/intro_getting_started.html#host-key-checking)
 
+`INSTALL_OC` (optional, build-time variable)
+
+If specified during build (e.g. `oc new-build -e INSTALL_OC=true ...`) the `oc`
+[OpenShift client](https://docs.openshift.org/latest/cli_reference/index.html)
+binary is downloaded and installed into the resulting image.
+
 ## Contribute
 
 **S2I project documentation**

@@ -1,0 +1,7 @@
+---
+- name: Hello Ansible - quick start
+  hosts: local-test
+
+  tasks:
+    - name: Hello server
+      shell: oc version

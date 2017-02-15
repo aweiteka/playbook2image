@@ -30,3 +30,15 @@ elif [[ -e requirements.txt ]]; then
   pip install --user -r requirements.txt
 fi
 
+if [[ -v INSTALL_OC ]]; then
+  echo "---> Installing 'oc' binary..."
+  mkdir tmp
+  cd tmp
+  curl -L ${OC_BINARY_URL} -o openshift-client.tar.gz
+  OC_PATH=`tar -tzf openshift-client.tar.gz |grep oc`
+  tar -xzf openshift-client.tar.gz ${OC_PATH}
+  cp ${OC_PATH} ${APP_ROOT}/bin/oc
+  cd ..
+  rm -rf tmp/
+fi
+
