@@ -9,9 +9,10 @@ Prerequisites: an OpenShiftv3 cluster or [s2i binary](https://github.com/openshi
 In this workflow we build a new image with our playbook, setup secrets (private ssh key, for example) and create a job to run our playbook image.
 
 1. **Build**: Add your playbook to the image. This will create a new image with your playbook sourcecode
-  * Using OpenShift:
+  * Using OpenShift. In this example we instruct the build script to install the OpenShift CLI so it's available from our playbook:
 
-          oc new-build docker.io/aweiteka/playbook2image~https://github.com/PLAYBOOK/REPO.git
+          oc new-build -e INSTALL_OC=true \
+             docker.io/aweiteka/playbook2image~https://github.com/PLAYBOOK/REPO.git
   * Using docker:
     1. Using the [example Dockerfile](Dockerfile.example), create a Dockerfile in the playbook repository.
     1. Build the image
@@ -37,7 +38,7 @@ In this workflow we build a new image with our playbook, setup secrets (private 
                -e INVENTORY_URL=URL \
                IMAGE_FROM_BUILD_STEP
 
-### Environment Variable Options
+### Runtime Environment Variable Options
 
 **`PLAYBOOK_FILE`** (required)
 
@@ -83,12 +84,6 @@ ansible-vault passphrase for decrypting files. This is written to a file and use
 
 Disable host key checking. See [documentation](http://docs.ansible.com/ansible/intro_getting_started.html#host-key-checking)
 
-`INSTALL_OC` (optional, build-time variable)
-
-If specified during build (e.g. `oc new-build -e INSTALL_OC=true ...`) the `oc`
-[OpenShift client](https://docs.openshift.org/latest/cli_reference/index.html)
-binary is downloaded and installed into the resulting image.
-
 `WORK_DIR` (optional)
 
 If not specified `ansible-playbook` will run from `${APP_HOME}`
@@ -96,6 +91,16 @@ directory(`/opt/app-root/src`) where the target repository is mounted.
 When relative or absolute path is specified in `WORK_DIR`, `ansible-playbook`
 will be launched from `WORK_DIR` directory. That might come in handy for
 example if you have roles or `ansible.cfg` in non-root of the repository.
+
+### Build time Environment Variable Options
+
+These options are passed in when building the application (e.g. `oc new-build` or `docker build` or `s2i`)
+
+`INSTALL_OC` (optional)
+
+If specified during build (e.g. `oc new-build -e INSTALL_OC=true ...`) the `oc`
+[OpenShift client](https://docs.openshift.org/latest/cli_reference/index.html)
+binary is downloaded and installed into the resulting image.
 
 ## Contribute
 
