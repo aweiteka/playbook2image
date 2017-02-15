@@ -89,6 +89,14 @@ If specified during build (e.g. `oc new-build -e INSTALL_OC=true ...`) the `oc`
 [OpenShift client](https://docs.openshift.org/latest/cli_reference/index.html)
 binary is downloaded and installed into the resulting image.
 
+`WORK_DIR` (optional)
+
+If not specified `ansible-playbook` will run from `${APP_HOME}`
+directory(`/opt/app-root/src`) where the target repository is mounted.
+When relative or absolute path is specified in `WORK_DIR`, `ansible-playbook`
+will be launched from `WORK_DIR` directory. That might come in handy for
+example if you have roles or `ansible.cfg` in non-root of the repository.
+
 ## Contribute
 
 **S2I project documentation**
