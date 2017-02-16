@@ -14,7 +14,7 @@ In this workflow we build a new image with our playbook, setup secrets (private 
           oc new-build -e INSTALL_OC=true \
              docker.io/aweiteka/playbook2image~https://github.com/PLAYBOOK/REPO.git
   * Using docker:
-    1. Using the [example Dockerfile](Dockerfile.example), create a Dockerfile in the playbook repository.
+    1. Using the [example Dockerfile](examples/Dockerfile.example), create a Dockerfile in the playbook repository.
     1. Build the image
 
             docker build -t IMAGE_NAME . -f Dockerfile.example
@@ -26,7 +26,7 @@ In this workflow we build a new image with our playbook, setup secrets (private 
     1. Create a secret for our ssh private key
 
             oc secrets new-sshauth sshkey --ssh-privatekey=~/.ssh/id_rsa
-    1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/aweiteka/playbook2image/master/sample-job.yaml) file, edit and create the job.
+    1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/aweiteka/playbook2image/master/examples/sample-job.yaml) file, edit and create the job.
 
             oc create -f sample-job.yaml
   * Using Docker (example command):
@@ -66,7 +66,7 @@ Relative path to python dependency requirements.txt file to support dynamic inve
 
 **`ANSIBLE_PRIVATE_KEY_FILE`** (optional, e.g. '/opt/app-root/src/.ssh/id_rsa/ssh-privatekey')
 
-Container path to mounted private SSH key. For OpenShift this must match the secret volumeMount (see mountPath in [sample-job.yaml](sample-job.yaml)). For docker this must match the bindmount container path, e.g. `-v ~/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa`.
+Container path to mounted private SSH key. For OpenShift this must match the secret volumeMount (see mountPath in [sample-job.yaml](examples/sample-job.yaml)). For docker this must match the bindmount container path, e.g. `-v ~/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa`.
 
 **`OPTS`** (optional)
 
