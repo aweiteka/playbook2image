@@ -8,8 +8,14 @@ MAINTAINER Aaron Weitekamp <aweiteka@redhat.com>
 
 LABEL io.k8s.description="Ansible playbook to image builder" \
       io.k8s.display-name="playbook2image" \
-      #io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,ansible,playbook"
+      io.openshift.tags="builder,ansible,playbook" \
+      url="https://github.com/aweiteka/playbook2image/blob/master/README.md" \
+      name="playbook2image" \
+      summary="Ansible playbook to image builder" \
+      description="Base image to to ship Ansible playbooks as self-executing container image." \
+      vcs-url="https://github.com/aweiteka/playbook2image" \
+      vcs-type="git" \
+      version="alpha"
 
 # ansible and pip are in EPEL
 RUN yum install -y epel-release && yum clean all -y
@@ -26,6 +32,7 @@ RUN pip install -Iv ansible==2.2.0.0
 # TODO: Copy the S2I scripts to /usr/libexec/s2i, since openshift/base-centos7 image sets io.openshift.s2i.scripts-url label that way, or update that label
 COPY ./.s2i/bin/ /usr/libexec/s2i
 COPY user_setup /tmp
+ADD README.md /help.1
 
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
