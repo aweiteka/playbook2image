@@ -3,12 +3,14 @@
 FROM docker.io/aweiteka/playbook2image:latest
 
 # OPTIONAL:
-#ADD your_dynamic_inventory_script.py requirements.txt /opt/app-root/src/
-#RUN pip install -r /opt/app-root/src/requirements.txt
+#ADD your_dynamic_inventory_script.py requirements.txt ${APP_HOME}
+#RUN pip install -r ${APP_HOME}/requirements.txt
 
 # uncomment if your playbook needs the oc CLI
 #ENV INSTALL_OC=true
 
-ADD YOUR_PLAYBOOK /opt/app-root/src/
+ADD YOUR_PLAYBOOK ${APP_HOME}
 
-CMD ["run"]
+# Containers from the built image should invoke the default "run" script
+# provided by the base image
+CMD ["/usr/libexec/s2i/run"]
