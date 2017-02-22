@@ -13,6 +13,6 @@ This directory contains a few examples of how to use playbook2image.
         oc create -f build-template.yaml  # This imports the template
         oc new-app playbook2image         # This instantiates the template
 
-- [Dockerfile.example](Dockerfile.example) is an example `Dockerfile` to build an image based on `playbook2image` using `docker run`. See the Build section of the [README](../README.md) for details on the various options to build images.
+- [Dockerfile.example](Dockerfile.example) is an example `Dockerfile` to build an image based on `playbook2image` using `docker build`. See the Build section of the [README](../README.md) for details on the various options to build images.
 
 - [sample-job.yaml](sample-job.yaml) is an example [Job spec](https://docs.openshift.org/latest/dev_guide/jobs.html) to run a specific playbook as a one time task. See the Run section of the [README](../README.md) for details on the various options to run images.
