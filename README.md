@@ -25,7 +25,7 @@ In this workflow we build a new image with our playbook, setup secrets (private 
   * Using OpenShift:
     1. Create a secret for our ssh private key
 
-            oc secrets new-sshauth sshkey --ssh-privatekey=~/.ssh/id_rsa
+            oc secrets new-sshauth sshkey --ssh-privatekey=$HOME/.ssh/id_rsa
     1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/aweiteka/playbook2image/master/examples/sample-job.yaml) file, edit and create the job.
 
             oc create -f sample-job.yaml

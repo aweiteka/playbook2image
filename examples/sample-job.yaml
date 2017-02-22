@@ -17,7 +17,7 @@ spec:
         image: 172.30.114.236:5000/some_project/atomic-host-tests
         env:
         - name: PLAYBOOK_FILE
-          value: /opt/app-root/src/playbooks/main.yaml
+          value: playbooks/main.yaml
         - name: INVENTORY_URL
           value: http://example.com/myhosts
         - name: ANSIBLE_PRIVATE_KEY_FILE
