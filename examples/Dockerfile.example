@@ -1,14 +1,31 @@
 # An example Dockerfile to package playbooks as docker image
-# If using OpenShift, consider using the platform source2image build instead
+# If using OpenShift, consider using the platform's source2image build instead
+
 FROM docker.io/aweiteka/playbook2image:latest
 
-# OPTIONAL:
+# -------------------------------------------------------------------------
+# OPTIONAL: dependencies
+#
+# You might want to install some additional dependencies that your playbook
+# needs.
+#
+# You can, of course, bring them manually via ADD/RUN/etc here:
+#
 #ADD your_dynamic_inventory_script.py requirements.txt ${APP_HOME}
 #RUN pip install -r ${APP_HOME}/requirements.txt
+#
+# You can also make use of the 'assemble' script that is part of
+# playbook2image as it has built-in support for some common dependency
+# tasks. For example, to install the 'oc' command line client and 
+# some Python dependencies:
+#
+#ENV INSTALL_OC=true \
+#    PYTHON_REQUIREMENTS=pyOpenSSL
+#RUN /usr/libexec/s2i/assemble
 
-# uncomment if your playbook needs the oc CLI
-#ENV INSTALL_OC=true
 
+# -------------------------------------------------------------------------
+# REQUIRED: add your playbook (and associated roles, filters, etc)
 ADD YOUR_PLAYBOOK ${APP_HOME}
 
 # Containers from the built image should invoke the default "run" script

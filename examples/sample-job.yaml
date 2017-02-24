@@ -1,3 +1,4 @@
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -17,13 +18,11 @@ spec:
         image: 172.30.114.236:5000/some_project/atomic-host-tests
         env:
         - name: PLAYBOOK_FILE
-          value: /opt/app-root/src/playbooks/main.yaml
+          value: playbooks/main.yaml
         - name: INVENTORY_URL
           value: http://example.com/myhosts
         - name: ANSIBLE_PRIVATE_KEY_FILE
           value: /opt/app-root/src/.ssh/id_rsa/ssh-privatekey
-        - name: ANSIBLE_LOCAL_TEMP
-          value: /tmp/certcheck
         - name: ANSIBLE_HOST_KEY_CHECKING
           value: "False"
         # options to ansible-playbook https://linux.die.net/man/1/ansible-playbook
@@ -33,7 +32,7 @@ spec:
         - name: sshkey
           mountPath: /opt/app-root/src/.ssh/id_rsa
       volumes:
-        - name: sshkey
-          secret:
-            secretName: sshkey
+      - name: sshkey
+        secret:
+          secretName: sshkey
       restartPolicy: Never
