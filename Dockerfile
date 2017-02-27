@@ -37,7 +37,8 @@ ADD README.md /help.1
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
     USER_UID=1001 \
-ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
+    APP_HOME=${APP_ROOT}/src \
+    PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc ${APP_ROOT}/bin
 RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && \
     /tmp/user_setup
