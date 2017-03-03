@@ -13,9 +13,11 @@ This directory contains a few examples of how to use playbook2image.
         oc create -f build-template.yaml  # This imports the template
         oc new-app playbook2image         # This instantiates the template
 
-- [Dockerfile.example](Dockerfile.example) is an example `Dockerfile` to build an image based on `playbook2image` using `docker build`. See the Build section of the [README](../README.md) for details on the various options to build images.
+- [Dockerfile.simple](Dockerfile.simple) is an example of a very simple `Dockerfile` to  build an image that packages a playbook `docker build` using `playbook2image` as a base.
 
-- [sample-job.yaml](sample-job.yaml) is an example [Job spec](https://docs.openshift.org/latest/dev_guide/jobs.html) to run a specific playbook as a one time task. See the Run section of the [README](../README.md) for details on the various options to run images.
+- [Dockerfile.advanced](Dockerfile.advanced) is a more elaborate `Dockerfile` example that installs additional dependencies needed to run the packaged playbooks. See the Build section of the [README](../README.md) for details on the various options to build images.
+
+- [sample-job.yaml](sample-job.yaml) is an example [Job spec](https://docs.openshift.org/latest/dev_guide/jobs.html) to run an [openshift-ansible](https://github.com/openshift/openshift-ansible) playbook that performs a check of the internal OpenShift certificates' expiration dates as a one time task. See the Run section of the [README](../README.md) for details on the various options to run images.
 
 - [sample-scheduled-job.yaml](sample-scheduled-job.yaml) is an example [ScheduledJob](https://docs.openshift.com/container-platform/3.4/dev_guide/scheduled_jobs.html) to run a regular status check of OpenShift's internal certificates' expiration dates. It uses a containerized `openshift-ansible` (see the `build-openshift-ansible.yaml` example above) to run a certificate check playbook.
 
