@@ -39,8 +39,8 @@ COPY ./.s2i/bin/ /usr/libexec/s2i
 COPY user_setup /tmp
 ADD README.md /help.1
 
-ENV APP_ROOT=/opt/app-root \
-    USER_NAME=default \
+ENV APP_ROOT=/opt/app-root
+ENV USER_NAME=default \
     USER_UID=1001 \
     APP_HOME=${APP_ROOT}/src \
     PATH=$PATH:${APP_ROOT}/bin
