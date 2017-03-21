@@ -35,7 +35,7 @@ if [[ -v INSTALL_OC ]]; then
   echo "---> Installing 'oc' binary..."
   mkdir tmp
   cd tmp
-  OC_BINARY_URL=$(python -c "import requests;print [s for s in [r for r in requests.get('https://api.github.com/repos/openshift/origin/releases').json() if not r['prerelease'] and '1.4' in r['name']][0]['assets'] if 'linux-64' in s['browser_download_url']][0]['browser_download_url']")
+  OC_BINARY_URL=$(python -c "import requests;releases = requests.get('https://api.github.com/repos/openshift/origin/releases').json();print [s for s in [r for r in releases if not r['prerelease'] and '1.4' in r['name']][0]['assets'] if 'linux-64' in s['browser_download_url']][0]['browser_download_url']")
   curl -L ${OC_BINARY_URL} -o openshift-client.tar.gz
   OC_PATH=`tar -tzf openshift-client.tar.gz |grep oc`
   tar -xzf openshift-client.tar.gz ${OC_PATH}
