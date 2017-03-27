@@ -1,5 +1,5 @@
 # playbook2image
-FROM rhscl/python-27-rhel7:2.7-16.11
+FROM rhscl/python-27-rhel7:2.7
 
 MAINTAINER Aaron Weitekamp <aweiteka@redhat.com>
 
@@ -9,6 +9,7 @@ MAINTAINER Aaron Weitekamp <aweiteka@redhat.com>
 LABEL io.k8s.description="Ansible playbook to image builder" \
       io.k8s.display-name="playbook2image" \
       io.openshift.tags="builder,ansible,playbook" \
+      io.openshift.expose-services="" \
       url="https://github.com/aweiteka/playbook2image/blob/master/README.md" \
       name="playbook2image" \
       summary="Ansible playbook to image builder" \
@@ -16,9 +17,7 @@ LABEL io.k8s.description="Ansible playbook to image builder" \
       com.redhat.component="playbook2image-docker" \
       vcs-url="https://github.com/aweiteka/playbook2image" \
       vcs-type="git" \
-      version="0.0.1" \
-      release="1" \
-      architecture="x86_64"
+      version="0.0.1"
 
 # Install Ansible.
 #
@@ -37,12 +36,12 @@ RUN yum repolist > /dev/null && \
 
 COPY ./.s2i/bin/ /usr/libexec/s2i
 COPY user_setup /tmp
-ADD README.md /help.1
 
 ENV APP_ROOT=/opt/app-root
 ENV USER_NAME=default \
     USER_UID=1001 \
     APP_HOME=${APP_ROOT}/src \
+    HOME=${APP_ROOT}/src \
     PATH=$PATH:${APP_ROOT}/bin
 
 RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc ${APP_ROOT}/bin
@@ -53,4 +52,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && \
 USER ${USER_UID}
 
 RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
+
+WORKDIR ${APP_HOME}
+
 CMD ["/usr/libexec/s2i/usage"]
