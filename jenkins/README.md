@@ -15,7 +15,7 @@
         --context-dir='jenkins' --name='jenkins'
 1. Deploy the jenkins server
 
-        oc process openshift/jenkins-ephemeral \
+        oc process openshift//jenkins-ephemeral \
         NAMESPACE=p2i-ci MEMORY_LIMIT=2Gi | oc create -f -
 
 1. Create the OpenShift pipeline
