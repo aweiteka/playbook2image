@@ -40,25 +40,33 @@ In this workflow we build a new image with our playbook, setup secrets (private 
 
 ### Runtime Environment Variable Options
 
-**`PLAYBOOK_FILE`** (required)
+A container run from a *playbook2image* image needs at least these configured options:
+
+1. An **inventory**. You *must* specify it using one of these three options: `INVENTORY_FILE` to point to a local path inside the container, `INVENTORY_URL` to download a static inventory file, or `DYNAMIC_SCRIPT_URL` to download a dynamic inventory script.
+1. A **playbook** to run, set via `PLAYBOOK_FILE`.
+1. **ssh keys** mounted into the container (by default these should be in `/opt/app-root/src/.ssh`).
+
+Below is a list of available options. Ansible itself also allows its [configuration to be controlled via environment variables](http://docs.ansible.com/ansible/intro_configuration.html#environmental-configuration) and some of these are specially relevant for *playbook2image*'s use case so they are also highligted here (starting with `ANSIBLE_*`):
+
+**`INVENTORY_FILE`**
+
+Path to the location of the inventory file within the container. It can be a relative path pointing to an inventory provided in the source, or an absolute path to an inventory mounted in the container via a volume.
+
+**`INVENTORY_URL`**
+
+URL to inventory file. This is downloaded into the container.
+
+**`DYNAMIC_SCRIPT_URL`**
+
+URL to dynamic inventory script. This is downloaded into the container. If the dynamic inventory script is python see **PYTHON_REQUIREMENTS**.
+
+**`PLAYBOOK_FILE`**
 
 Relative path to playbook file relative to project source. This is mounted in the container at **/opt/app-root/src/PLAYBOOK_FILE**.
 
-**`INVENTORY_FILE`** (optional)
-
-Relative path to inventory file relative to project source. This is mounted in the container at **/opt/app-root/src/INVENTORY_FILE**.
-
-**`INVENTORY_URL`** (optional)
-
-URL to inventory file. This is downloaded into the container as inventory file **/opt/app-root/src/inventory**.
-
 **`ALLOW_ANSIBLE_CONNECTION_LOCAL`** (optional)
 
-If set to false all `ansible_connection=local` settings will be ignored.
-
-**`DYNAMIC_SCRIPT_URL`** (optional)
-
-URL to dynamic inventory script. This is downloaded into the container as **/opt/app-root/src/dynamic_inventory_script**. If the dynamic inventory script is python see **PYTHON_REQUIREMENTS**.
+If set to *false* all `ansible_connection=local` settings in the inventory will be removed. This can help when you want to use an existing inventory file that uses *local* connections to a host: it is likely that an *ssh* connection is a better fit when running from a container.
 
 **`PYTHON_REQUIREMENTS`** (optional, default 'requirements.txt')
 
@@ -84,10 +92,10 @@ ansible-vault passphrase for decrypting files. This is written to a file and use
 
 Disable host key checking. See [documentation](http://docs.ansible.com/ansible/intro_getting_started.html#host-key-checking)
 
-`WORK_DIR` (optional)
+**`WORK_DIR`** (optional)
 
 If not specified `ansible-playbook` will run from `${APP_HOME}`
-directory(`/opt/app-root/src`) where the target repository is mounted.
+directory (`/opt/app-root/src`) where the target repository is mounted.
 When relative or absolute path is specified in `WORK_DIR`, `ansible-playbook`
 will be launched from `WORK_DIR` directory. That might come in handy for
 example if you have roles or `ansible.cfg` in non-root of the repository.
