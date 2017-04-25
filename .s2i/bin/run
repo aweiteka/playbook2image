@@ -15,18 +15,27 @@ USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 sed "s@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@${USER_NAME}:x:${USER_ID}:${GROUP_ID}@g" ${APP_ROOT}/etc/passwd.template > /etc/passwd
 
-INVENTORY="${APP_HOME}/tmp_inventory"
-INVENTORY_ARG="-i ${INVENTORY}"
+INVENTORY="$(mktemp)"
 if [[ -v INVENTORY_FILE ]]; then
-  cp ${INVENTORY_FILE} ${INVENTORY}
+  # If the pointed inventory has execute/search perms we can assume it
+  # contains a dynamic inventory and we use it directly.
+  # Otherwise we make a copy so that ALLOW_ANSIBLE_CONNECTION_LOCAL below
+  # does not attempt to modify the original
+  if [[ -x ${INVENTORY_FILE} ]]; then
+    INVENTORY="${INVENTORY_FILE}"
+  else
+    cp ${INVENTORY_FILE} ${INVENTORY}
+  fi
 elif [[ -v INVENTORY_URL ]]; then
   curl -o ${INVENTORY} ${INVENTORY_URL}
 elif [[ -v DYNAMIC_SCRIPT_URL ]]; then
   curl -o ${INVENTORY} ${DYNAMIC_SCRIPT_URL}
   chmod 755 ${INVENTORY}
 else
-  INVENTORY_ARG=""
+  echo "One of INVENTORY_FILE, INVENTORY_URL or DYNAMIC_SCRIPT_URL must be provided"
+  exit 1
 fi
+INVENTORY_ARG="-i ${INVENTORY}"
 
 if [[ "$ALLOW_ANSIBLE_CONNECTION_LOCAL" = false ]]; then
   sed -i s/ansible_connection=local// ${INVENTORY}
