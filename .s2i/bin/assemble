@@ -25,13 +25,13 @@ cp -Rf /tmp/src/. ./
 
 echo "---> Building application from source..."
 if [[ -v PYTHON_REQUIREMENTS ]]; then
-  pip install -r ${PYTHON_REQUIREMENTS}
+  pip install --no-cache-dir -r ${PYTHON_REQUIREMENTS}
 elif [[ -e requirements.txt ]]; then
-  pip install --user -r requirements.txt
+  pip install --no-cache-dir --user -r requirements.txt
 fi
 
 if [[ -v INSTALL_OC ]]; then
-  pip install --user requests
+  pip install --no-cache-dir --user requests
   echo "---> Installing 'oc' binary..."
   mkdir tmp
   cd tmp
