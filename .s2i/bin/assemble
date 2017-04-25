@@ -24,6 +24,9 @@ echo "---> Installing application source..."
 cp -Rf /tmp/src/. ./
 
 echo "---> Building application from source..."
+# pre-create PYTHONUSERBASE/lib/*, otherwise pip creates it with mode 0700
+# which prevents containers with arbitrary UIDs to access local packages
+mkdir -p ${HOME}/.local/lib/python2.7/site-packages
 if [[ -v PYTHON_REQUIREMENTS ]]; then
   pip install -r ${PYTHON_REQUIREMENTS}
 elif [[ -e requirements.txt ]]; then
