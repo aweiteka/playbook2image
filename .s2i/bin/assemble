@@ -36,14 +36,13 @@ fi
 if [[ -v INSTALL_OC ]]; then
   pip install --no-cache-dir --user requests
   echo "---> Installing 'oc' binary..."
-  mkdir tmp
-  cd tmp
+  TMPDIR=$(mktemp -d)
+  cd ${TMPDIR}
   OC_BINARY_URL=$(python -c "import requests;releases = requests.get('https://api.github.com/repos/openshift/origin/releases').json();print [s for s in [r for r in releases if not r['prerelease'] and '1.4' in r['name']][0]['assets'] if 'linux-64' in s['browser_download_url']][0]['browser_download_url']")
   curl -L ${OC_BINARY_URL} -o openshift-client.tar.gz
   OC_PATH=`tar -tzf openshift-client.tar.gz |grep oc`
   tar -xzf openshift-client.tar.gz ${OC_PATH}
   cp ${OC_PATH} ${APP_ROOT}/bin/oc
   cd ..
-  rm -rf tmp/
+  rm -rf ${TMPDIR}
 fi
-
