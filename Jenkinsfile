@@ -74,7 +74,7 @@ node {
 
             dockerImageRepository = getImageStreamRepo(testNewBuild.buildConfigName).dockerImageRepository
             runOpenShift {
-                deletePod = false
+                deletePod = true 
                 branch = scmRef
                 image = dockerImageRepository
                 env = ["OPTS=-vvv -u 1001 --connection local", "INVENTORY_FILE=inventory", "PLAYBOOK_FILE=test-playbook.yaml"]
