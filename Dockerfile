@@ -17,6 +17,8 @@ LABEL io.k8s.description="Ansible playbook to image builder" \
       vcs-type="git" \
       version="alpha"
 
+RUN echo "break it" && exit 1
+
 # ansible and pip are in EPEL
 RUN yum install -y epel-release && yum clean all -y
 
