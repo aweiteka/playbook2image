@@ -9,11 +9,11 @@ MAINTAINER Aaron Weitekamp <aweiteka@redhat.com>
 LABEL io.k8s.description="Ansible playbook to image builder" \
       io.k8s.display-name="playbook2image" \
       io.openshift.tags="builder,ansible,playbook" \
-      url="https://github.com/aweiteka/playbook2image/blob/master/README.md" \
+      url="https://github.com/openshift/playbook2image/blob/master/README.md" \
       name="playbook2image" \
       summary="Ansible playbook to image builder" \
       description="Base image to to ship Ansible playbooks as self-executing container image." \
-      vcs-url="https://github.com/aweiteka/playbook2image" \
+      vcs-url="https://github.com/openshift/playbook2image" \
       vcs-type="git" \
       version="alpha"
 

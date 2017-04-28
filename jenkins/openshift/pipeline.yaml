@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: BuildConfig
 metadata:
-  name: "createcred-pipeline" 
+  name: "createcred-pipeline"
 spec:
   source:
     type: "Git"
     git:
-      uri: "https://github.com/aweiteka/playbook2image"
+      uri: "https://github.com/openshift/playbook2image"
       ref: "master"
   strategy:
     type: "JenkinsPipeline"
     jenkinsPipelineStrategy:
-        jenkinsfilePath: jenkins/jobs/credPipelineJob.groovy 
+        jenkinsfilePath: jenkins/jobs/credPipelineJob.groovy

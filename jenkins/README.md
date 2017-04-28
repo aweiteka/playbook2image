@@ -11,7 +11,7 @@
 
 1. Build a Jenkins master container image with the required plugins. We use OpenShift's source-to-image build to install the plugins listed in the jenkins/plugins.txt file.
 
-        oc new-build openshift/jenkins~https://github.com/aweiteka/playbook2image \
+        oc new-build openshift/jenkins~https://github.com/openshift/playbook2image \
         --context-dir='jenkins' --name='jenkins'
 1. Deploy the jenkins server
 

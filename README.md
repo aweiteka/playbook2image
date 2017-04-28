@@ -26,7 +26,7 @@ In this workflow we build a new image with our playbook, setup secrets (private 
     1. Create a secret for our ssh private key
 
             oc secrets new-sshauth sshkey --ssh-privatekey=$HOME/.ssh/id_rsa
-    1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/aweiteka/playbook2image/master/examples/sample-job.yaml) file, edit and create the job.
+    1. Create a new job. Download the [sample-job.yaml](https://raw.githubusercontent.com/openshift/playbook2image/master/examples/sample-job.yaml) file, edit and create the job.
 
             oc create -f sample-job.yaml
   * Using Docker (example command):
@@ -125,4 +125,3 @@ To run tests you will need to [install the s2i binary](https://github.com/opensh
 ```
 sudo make test
 ```
-
