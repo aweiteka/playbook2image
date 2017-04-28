@@ -1,28 +1,28 @@
 #!groovy
 
-organizationFolder('aweiteka') {
+organizationFolder("${name}") {
     description('This contains branch source jobs for GitHub')
-    displayName('aweiteka')
-  	orphanedItemStrategy {
+    displayName("${displayName}")
+    orphanedItemStrategy {
         discardOldItems {
-		    daysToKeep(0)
-		    numToKeep(0)
+            daysToKeep(0)
+            numToKeep(0)
         }
-	}
-	organizations {
-		github {
+    }
+    organizations {
+        github {
             apiUri('https://api.github.com')
-			repoOwner('aweiteka')
-			scanCredentialsId("${CRED_ID}")
-			pattern('playbook2image')
-			checkoutCredentialsId("${CRED_ID}")
-			buildOriginBranch(true)
-			buildOriginBranchWithPR(true)
-			buildOriginPRMerge(false)
-			buildOriginPRHead(false)
-			buildForkPRMerge(true)
-			buildForkPRHead(false)
-		}
+            repoOwner("${repoOwner}")
+            scanCredentialsId("${credentialsId}")
+            pattern("${pattern}")
+            checkoutCredentialsId("${credentialsId}")
+            buildOriginBranch(true)
+            buildOriginBranchWithPR(true)
+            buildOriginPRMerge(false)
+            buildOriginPRHead(false)
+            buildForkPRMerge(true)
+            buildForkPRHead(false)
+        }
     }
     triggers {
         periodic(10)

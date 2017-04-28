@@ -57,7 +57,6 @@ workflow-remote-loader
 workflow-scm-step
 workflow-step-api
 bouncycastle-api
-openshift-client
 credentials
 ansicolor
 github-api
@@ -72,4 +71,7 @@ workflow-support
 workflow-api
 pipeline-github-lib
 github-organization-folder
-job-dsl
+job-dsl:1.59
+pipeline-milestone-step
+lockable-resources
+embeddable-build-status

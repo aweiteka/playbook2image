@@ -1,64 +1,99 @@
 #!groovy
-
-// vim: ft=groovy
+@Library('Utils')
+import com.redhat.*
 
 properties([disableConcurrentBuilds()])
 
 node {
     def source = ""
+    def dockerfiles = null
+    def utils = new com.redhat.Utils()
+    def newBuild = null
+    def testNewBuild = null
+    String scmRef = scm.branches[0]
+    String scmUrl = scm.browser.url
+
+    /* Checkout source and find all the Dockerfiles.
+     * This will not include Dockerfiles with extensions. Currently the issue
+     * with using a Dockerfile with an extension is the oc new-build command
+     * does not offer an option to provide the dockerfilePath.
+     */
+    stage('checkout') {
+        checkout scm
+        dockerfiles = findFiles(glob: '**/Dockerfile')
+    }
+
+
+    /* if CHANGE_URL is defined then this is a pull request
+     * additional steps are required to determine the git url
+     * and branch name to pass to new-build.
+     * Otherwise just use the scm.browser.url and scm.branches[0]
+     * for new-build.
+     */
     if (env.CHANGE_URL) {
+        def pull = null
+        stage('Github Url and Ref') {
 
-        def newBuild = null
-        def changeUrl = env.CHANGE_URL
-
-        // Query the github repo api to return the clone_url and the ref (branch name)
-        def githubUri = changeUrl.replaceAll("github.com/", "api.github.com/repos/")
-        githubUri = githubUri.replaceAll("pull", "pulls")
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github" , usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            sh("curl -u ${env.USERNAME}:${env.PASSWORD} -o ${env.WORKSPACE}/github.json ${githubUri}")
+            // Query the github repo api to return the clone_url and the ref (branch name)
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                pull = utils.getGitHubPR(env.USERNAME, env.PASSWORD, env.CHANGE_URL)
+                scmUrl = pull.url
+                scmRef = pull.ref
+                deleteBuild = true
+            }
         }
-        def pull = readJSON file: 'github.json'
+    }
+    for (int i = 0; i < dockerfiles.size(); i++) {
+        def resources = null
+        try {
+        /* Execute oc new-build on each dockerfile available
+         * in the repo.  The context-dir is the path removing the
+         * name (i.e. Dockerfile)
+         */
+            def is = ""
+            def dockerImageRepository = ""
+            String path = dockerfiles[i].path.replace(dockerfiles[i].name, "")
+            newBuild = newBuildOpenShift() {
+                url = scmUrl
+                branch = scmRef
+                contextDir = path
+                deleteBuild = false
+                randomName = true 
+            }
 
-        if (pull.head.repo == null) {
-            error("Unable to read GitHub JSON file")
+            is = getImageStreamRepo(newBuild.buildConfigName).imageStream
+
+            testNewBuild = newBuildOpenShift() {
+                url = scmUrl
+                branch = scmRef
+                contextDir = "test/test-app"
+                deleteBuild = false
+                imageStream = is
+                randomName = true
+            }
+
+            dockerImageRepository = getImageStreamRepo(testNewBuild.buildConfigName).dockerImageRepository
+            runOpenShift {
+                deletePod = true 
+                branch = scmRef
+                image = dockerImageRepository
+                env = ["OPTS=-vvv -u 1001 --connection local", "INVENTORY_FILE=inventory", "PLAYBOOK_FILE=test-playbook.yaml"]
+            }
+
+            resources = testNewBuild.names + newBuild.names
+            currentBuild.result = 'SUCCESS'
         }
-
-        openshift.withCluster() {
-            openshift.withProject() {
-                try {
-                    // use oc new-build to build the image using the clone_url and ref
-                    newBuild = openshift.newBuild("${pull.head.repo.clone_url}#${pull.head.ref}")
-                    echo "newBuild created: ${newBuild.count()} objects : ${newBuild.names()}"
-                    def builds = newBuild.narrow("bc").related("builds")
-
-                    timeout(10) {
-                        builds.watch {
-                            if (it.count() == 0) {
-                                return false
-                            }
-                            echo "Detected new builds created by buildconfig: ${it.names()}"
-                            return true
+        catch(all) {
+            currentBuild.result = 'FAILURE'
+            echo "Exception: ${all}"
+        }
+        finally {
+            stage('Clean Up Resources') {
+               openshift.withCluster() {
+                    openshift.withProject() {
+                        for (r in resources) {
+                            openshift.selector(r).delete()
                         }
-                        builds.untilEach(1) {
-                            return it.object().status.phase == "Complete"
-                        }
-                    }
-                }
-                finally {
-                    if (newBuild) {
-                        def result = newBuild.narrow("bc").logs()
-                        echo "Result of logs operation:"
-                        echo "  status: ${result.status}"
-                        echo "  stderr: ${result.err}"
-                        echo "  number of actions to fulfill: ${result.actions.size()}"
-                        echo "  first action executed: ${result.actions[0].cmd}"
-
-                        if (result.status != 0) {
-                            echo "${result.out}"
-                            error("Image Build Failed")
-                        }
-                        // After built we do not need the BuildConfig or the ImageStream
-                        newBuild.delete()
                     }
                 }
             }
@@ -66,5 +101,4 @@ node {
     }
 }
 
-
-
+// vim: ft=groovy
